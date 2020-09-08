@@ -19,7 +19,7 @@
   </head>
   <body>
     <div style="height: 80px;">
-
+      <!--Here is an empty div-->
     </div>
     <div class="col-lg-12 text-center" style="height: 120px; font-family: 'Gill Sans';" >
       <h1>DAPP-TextPoster</h1>
@@ -101,13 +101,11 @@
       var contract = new web3.eth.Contract(contractAbi, contractAddress);
 
       console.log("Here is the contract", contract);
-      // Display the Greeting
       contract.methods.poster().call(function(error, result) {
         console.log(error, result)
         $('#posting').html(result);
       });
-
-      // Change the Greeting
+      
       $('form').on('submit', function(event) {
         event.preventDefault();
         posting = $('input').val();
