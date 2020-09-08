@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Poster</title>
+
+    <!-- Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div style="height: 80px;">
+
+    </div>
+    <div class="col-lg-12 text-center" style="height: 120px; font-family: 'Gill Sans';" >
+      <h1>DAPP-TextPoster</h1>
+      <p>Post your thoughts down below</p>
+    </div>
+    <div class="container" style="width: 600px;">
+      <div class="row">
+        <div class="col-lg-12 text-center" >
+          <h1 id="posting">&nbsp;</h1>
+          <div id="content">
+            <form role="form">
+              <div class="form-group" style="display:inline;">
+                <div class="input-group" style="margin-top: 30px;">
+                  <input class="form-control input-lg" name="posting">
+                  </input>
+                  <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary btn-block">Set</button>
+                  </span>
+                  <button type="button" class="btn btn-success" onclick="history.go(0)">Post</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <!-- Web3.js -->
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
+    <script>
+      if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+      } else {
+        web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
+      }
+
+      var contractAbi = [
+        {
+          "constant": false,
+          "inputs": [
+            {
+              "name": "_posting",
+              "type": "string"
+            }
+          ],
+          "name": "setPosting",
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "constant": true,
+          "inputs": [],
+          "name": "poster",
+          "outputs": [
+            {
+              "name": "",
+              "type": "string"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "view",
+          "type": "function"
+        }
+      ];
+
+      var contractAddress = '0x50c57a3cf892f71a60c4aafdc4edbe6c498f312d';
+
+      var contract = new web3.eth.Contract(contractAbi, contractAddress);
+
+      console.log("Here is the contract", contract);
+      // Display the Greeting
+      contract.methods.poster().call(function(error, result) {
+        console.log(error, result)
+        $('#posting').html(result);
+      });
+
+      // Change the Greeting
+      $('form').on('submit', function(event) {
+        event.preventDefault();
+        posting = $('input').val();
+        web3.eth.getAccounts().then(function(accounts) {
+          contract.methods.setPosting(posting).send({ from: accounts[0] });
+        });
+      });
+
+    </script>
+  </body>
+</html>
